@@ -54,6 +54,10 @@ handle_failure() {
   warn_missing_devdeps "$LOG_FILE"
   warn_econnreset "$LOG_FILE"
   failure_message | output "$LOG_FILE"
+  
+  if [ -f "$LOG_FILE" ]; then
+    cat "$LOG_FILE"
+  fi
 }
 trap 'handle_failure' ERR
 
@@ -160,14 +164,6 @@ restore_cache() {
 
   mcount "cache.$cache_status"
 }
-
-cat_npm_debug_log() {
-  if [ -f $BUILD_DIR/npm-debug.log ]; then
-    cat $BUILD_DIR/npm-debug.log
-  fi
-}
-
-trap cat_npm_debug_log EXIT
 
 header "Restoring cache"
 restore_cache | output "$LOG_FILE"
